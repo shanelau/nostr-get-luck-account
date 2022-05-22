@@ -1,19 +1,16 @@
 import { useState, useEffect, useRef } from 'react'
+import { flushSync } from 'react-dom';
 //@ts-ignore
 import { generatePrivateKey, getPublicKey } from 'https://unpkg.com/nostr-tools/nostr.js'
 import { RadioGroup, Radio } from 'react-radio-group'
 import logo from './logo.svg'
 import './App.css'
 
+const times = 100000
 function App() {
-  const [count, setCount] = useState(0)
-  const [listItems, setListItems] = useState([])
-  const [type, setType] = useState('begin_custom_radio')
-  const [type2, setType2] = useState('end_custom_radio')
-  const [begin_custom, setBegin_custom] = useState('')
-  const [end_custom, setEnd_custom] = useState('')
-  const [search, setSearch] = useState({})
-  const [times, setTimes] = useState(1)
+  const [result, setResult] = useState([])
+  const [selectVal, setSelectVal] = useState({'pre': undefined, 'back': undefined})
+  const [searchState, setSearchState] = useState('start') // seaching, end, start
   const currNode = useRef()
 
   function charIsEqual(str, tick) {
@@ -46,18 +43,18 @@ function App() {
     // }))
 
     currentCal = { index, begin, end }
-    if (+index % 100 == 0) document.querySelector('#search').innerHTML = `<p>Search #${currentCal.index} : ${currentCal.begin}...${currentCal.end} </p>`
+    // if (+index % 100 == 0) document.querySelector('#search').innerHTML = `<p>Search #${currentCal.index} : ${currentCal.begin}...${currentCal.end} </p>`
     // 以 xxx 开头
-    if (type === 'begin_custom_radio' && begin_custom){
-      if(!begin.startsWith(begin_custom)) return
-    }
+    // if (type === 'begin_custom_radio' && begin_custom){
+    //   if(!begin.startsWith(begin_custom)) return
+    // }
     // 以 xx 结尾
-    if (type2 === 'end_custom_radio' && end_custom) {
-      if (!end.endsWith(end_custom)) return
-    }
+    // if (type2 === 'end_custom_radio' && end_custom) {
+    //   if (!end.endsWith(end_custom)) return
+    // }
 
-    const beginTick = +type.split('_')[2]
-    const endTick = +type2.split('_')[2]
+    const beginTick = +selectVal['pre']
+    const endTick = +selectVal['back']
     if (beginTick){
       const r1 = charIsEqual(begin, beginTick)
       if (!r1) return
@@ -65,107 +62,127 @@ function App() {
         const r2 = charIsEqual(end.split('').reverse(), endTick)
         if(!r2) return
       }
-      return <li key={pub}> publicKey: {pub} - {pk}</li> //privateKey:{pk} 
+      return { publicKey: pub, privateKey: pk}//privateKey:{pk} 
     }else{
       if (endTick) {
         const r2 = charIsEqual(end.split('').reverse(), endTick)
         if (!r2) return
       }
-      return <li key={pub}> publicKey: {pub} - </li> //privateKey:{pk} 
+      return { publicKey: pub, privateKey: pk} //privateKey:{pk} 
     }
   }
 
-
   function tryAgain() {
+    flushSync(() => {
+      setSearchState('searching')
+    })
+    setTimeout(() => {
     const list = []
     for (let index = 0; index < times; index++) {
       const res = getPks(index)
-console.log(res)
+      // console.log(res)
       if (res) {
         // clearInterval(roop)
-        setListItems([res])
+        setResult(res)
+        setSearchState('end')
         return
       }
       // if(index === times -1){
       //   clearInterval(roop)
       // }
     }
+      setSearchState('end')
+    }, 0)    
   }
 
-  useEffect(() => {
-    // tryAgain()
-    // setInterval(function () {
-    //   console.log('currentCal', currentCal)
-    // }, 300)
-  }, [])
+  const ruleArr = new Array(6).fill(undefined)
 
+  const handleRuleClick = (position, index) => {
+    setSelectVal({...selectVal, [position]: index})
+    setSearchState('start')
+  }
+  const getRule = (position = 'pre') => {
+    let preStr = 'A'
+    let endStr = '*'
+    if(position === 'back') {
+      preStr = '*'
+      endStr = 'A'
+    }
+    
+    return <div className='ruleWrap'>{[...ruleArr, undefined].map((item,index) => {
+      return <div className={'ruleItem ' + (selectVal[position] === index && 'selected')} onClick={() => handleRuleClick(position,index)}>
+        {new Array(ruleArr.length - index).fill(undefined).map(() => preStr).join('')}{new Array(index).fill(undefined).map(() => endStr).join('')}
+        </div>
+    })}</div>
+  }
+  console.log(result, searchState)
   return (
     <div className="App" ref={currNode}>
       <header className="App-header">
         {/* <img src={logo} className="App-logo" alt="logo" /> */}
         <h1>Cool Address For Nostr</h1>
 <div>
-        前 6 个字符：
-        <RadioGroup name="begin" selectedValue={type} onChange={setType}>
-          <Radio value="begin_same_0" />******
-          <Radio value="begin_same_1" />A*****
-          <Radio value="begin_same_2" />AA****
-          <Radio value="begin_same_3" />AAA***
-          <Radio value="begin_same_4" />AAAA**
-          <Radio value="begin_same_5" />AAAAA*
-          <Radio value="begin_same_6" />AAAAAA
-          <Radio value="begin_custom_radio" /><input value={begin_custom} onChange={(e)=>{
+        选择前 6 个字符格式：
+        {getRule('pre')}
+        
+          {/* <Radio value="begin_custom_radio" /><input value={begin_custom} onChange={(e)=>{
               // 报错提示: a-e 0-9
               setBegin_custom(e.target.value)
           }} />
-        </RadioGroup>
+        */}
         </div>
         <div>后6个字符
-        <RadioGroup name="end" selectedValue={type2} onChange={setType2}>
-          <Radio value="end_same_0" />******
-          <Radio value="end_same_1" />*****A
-          <Radio value="end_same_2" />****AA
-          <Radio value="end_same_3" />***AAA
-          <Radio value="end_same_4" />**AAAA
-          <Radio value="end_same_5" />*AAAAA
-          <Radio value="end_same_6" />AAAAAA
+        {getRule('back')}
+        {/* 
             <Radio value="end_custom_radio" /><input value={end_custom} onChange={(e) => {
               setEnd_custom(e.target.value)
             }}></input>
-        </RadioGroup>
+         */}
         </div>
-        <div> 每次尝试：<input value={times} onChange={(e) => {
+        {/* <div> 每次尝试：<input value={times} onChange={(e) => {
           setTimes(e.target.value)
-        }} /> 个钱包</div>
-        <p>
-          <button type="button" onClick={() => tryAgain()}>
-            Search Wallet
-          </button>
-        </p>
-        <div id='search'></div>
-        {listItems.length == 0 ? <p>Not found matched account</p> : <ul>{listItems}</ul>}
-        {/* <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {' | '}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p> */}
+        }} /> 个钱包</div> */}
+        {
+          (selectVal.pre !== undefined || selectVal.back !== undefined ) &&
+          <div>
+            <button type="button" onClick={tryAgain} className='searchBtn'>
+              Search Wallet
+            </button>
+        </div>
+        }
+        {
+          searchState === 'searching' && <div>Searching...</div>
+        }
+        {
+          searchState === 'end' && 
+          <div>{result ? 
+            <div id='searchResult'>
+              <div >publicKey: <span >{result.publicKey}</span></div>
+              <div >privateKey: <span >{result.privateKey}</span></div>
+              <button className='btn' 
+              onClick={() => copyToClipBoard(`
+                publickKey: ${result.publicKey}
+                privateKey: ${result.privateKey}
+              `)}>Copy</button>
+            </div> : 
+          'no result, start again'}
+          </div>
+        }
       </header>
     </div>
   )
 }
 
 export default App
+
+function copyToClipBoard(content){
+
+  navigator.clipboard.writeText(content)
+      .then(() => {
+      console.log("Text copied to clipboard...")
+  })
+      .catch(err => {
+      console.log('Something went wrong', err);
+  })
+
+}
