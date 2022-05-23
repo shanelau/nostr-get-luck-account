@@ -27,6 +27,11 @@
 .App-link {
   color: #61dafb;
 }
+.searchBar{
+  display: flex;
+  justify-content: left;
+  align-items: center
+}
 
 @keyframes App-logo-spin {
   from {
@@ -39,4 +44,14 @@
 
 button {
   font-size: calc(10px + 2vmin);
+}
+
+.desc{
+  line-height: 1px;
+  color: #999;
+  font-size: 16px;
+  text-align: left;
+}
+.desc a{
+  color: #00ffee
 }

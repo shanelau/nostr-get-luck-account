@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { flushSync } from 'react-dom';
 //@ts-ignore
-import { generatePrivateKey, getPublicKey } from 'https://unpkg.com/nostr-tools/nostr.js'
+import { generatePrivateKey, getPublicKey } from './nostr.js'
 import { RadioGroup, Radio } from 'react-radio-group'
 import logo from './logo.svg'
 import './App.css'
@@ -120,9 +120,13 @@ function App() {
     <div className="App" ref={currNode}>
       <header className="App-header">
         {/* <img src={logo} className="App-logo" alt="logo" /> */}
-        <h1>Cool Address For Nostr</h1>
-<div>
-        选择前 6 个字符格式：
+        <h1 style={{lineHeight: '1px'}}>Create Cool Address For Nostr</h1>
+        <div className='desc'><p>1. Create a cool address as: 66666.....cccccc</p> 
+          <p>2. The more identical characters, the longer the searc</p>
+          <p>3. No Trust. You can execute when closing the network. Open Source on <a href='https://github.com/shanelau/nostr-get-luck-account'>Github</a></p>
+      </div>
+<div className='searchBar' style={{paddingTop: 50}}>
+          <span>Begin Chars</span>
         {getRule('pre')}
         
           {/* <Radio value="begin_custom_radio" /><input value={begin_custom} onChange={(e)=>{
@@ -131,7 +135,8 @@ function App() {
           }} />
         */}
         </div>
-        <div>后6个字符
+        <div className='searchBar'>
+          <span>End Chars</span>
         {getRule('back')}
         {/* 
             <Radio value="end_custom_radio" /><input value={end_custom} onChange={(e) => {
@@ -145,7 +150,7 @@ function App() {
         {
           (selectVal.pre !== undefined || selectVal.back !== undefined ) &&
           <div>
-            <button type="button" onClick={tryAgain} className='searchBtn'>
+              <button type="button" onClick={tryAgain} role="button" className='searchBtn'>
               Search Wallet
             </button>
         </div>
@@ -159,7 +164,7 @@ function App() {
             <div id='searchResult'>
               <div >publicKey: <span >{result.publicKey}</span></div>
               <div >privateKey: <span >{result.privateKey}</span></div>
-              <button className='btn' 
+                <button className='button-17' 
               onClick={() => copyToClipBoard(`
                 publickKey: ${result.publicKey}
                 privateKey: ${result.privateKey}
