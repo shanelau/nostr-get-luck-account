@@ -120,11 +120,11 @@ function App() {
     <div className="App" ref={currNode}>
       <header className="App-header">
         {/* <img src={logo} className="App-logo" alt="logo" /> */}
-        <h1 style={{ lineHeight: '1px' }}>Create Cool Address For <a href='https://astral.ninja'>Nostr</a></h1>
+        <h1 style={{ lineHeight: '1px' }}>Create Amazing Account For <a href='https://astral.ninja'>Nostr</a></h1>
         <div className='desc'><p>1. Create a cool address as: 66666.....cccccc</p> 
-          <p>2. The more identical characters, it takes longer</p>
-          <p>3. No Trust. You can execute when closing the network. Open Source on <a href='https://github.com/shanelau/nostr-get-luck-account'>Github</a></p>
-          <p>4. Press F12 to view the details</p>
+          <p>2. Press F12, select Console to view the details</p>
+          <p>3. The more identical characters, it takes longer</p>
+          <p>4. No Trust. You can execute when closing the network. Open Source on <a href='https://github.com/shanelau/nostr-get-luck-account'>Github</a></p>
           <p>5. Follow me on Nostr: 0000a0fa65fcccd99e6fd32fc7870339af40f4a94703ea30999fc5c091daa222</p>
       </div>
 
