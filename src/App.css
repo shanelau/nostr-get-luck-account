@@ -22,8 +22,7 @@
   justify-content: left;
   font-size: calc(10px + 2vmin);
   color: white;
-  padding-left: 10%;
-  padding-top: 10%;
+  padding: 5%;
 }
 
 .App-link {
@@ -33,6 +32,9 @@
   display: flex;
   justify-content: left;
   align-items: center;
+}
+.searchBar pre{
+  font-size: 18px
 }
 
 @keyframes App-logo-spin {
