@@ -32,7 +32,7 @@
 .searchBar{
   display: flex;
   justify-content: left;
-  align-items: center
+  align-items: center;
 }
 
 @keyframes App-logo-spin {

@@ -129,7 +129,7 @@ function App() {
       </div>
 
 <div className='searchBar' style={{paddingTop: 50}}>
-          <span>Begin Chars</span>
+          <pre>Begin Chars:</pre>
         {getRule('pre')}
         
           {/* <Radio value="begin_custom_radio" /><input value={begin_custom} onChange={(e)=>{
@@ -139,7 +139,7 @@ function App() {
         */}
         </div>
         <div className='searchBar'>
-          <span>End Chars</span>
+          <pre>End   Chars:</pre>
         {getRule('back')}
         {/* 
             <Radio value="end_custom_radio" /><input value={end_custom} onChange={(e) => {
