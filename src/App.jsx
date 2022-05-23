@@ -36,11 +36,11 @@ function App() {
 
     const begin = pub.slice(0, 6)
     const end = pub.slice(pub.length - 6, pub.length)
-    // console.log(JSON.stringify({
-    //   index,
-    //   publicKey: pub,
-    //   privateKey: pk
-    // }))
+    console.log(JSON.stringify({
+      index,
+      publicKey: pub,
+      privateKey: pk
+    }))
 
     currentCal = { index, begin, end }
     // if (+index % 100 == 0) document.querySelector('#search').innerHTML = `<p>Search #${currentCal.index} : ${currentCal.begin}...${currentCal.end} </p>`
